@@ -1,0 +1,11 @@
+hosts
+vars/*
+keys/*
+*.retry
+*.sw*
+.fuse*
+.DS_Store
+
+!.gitkeep
+!.*.example
+

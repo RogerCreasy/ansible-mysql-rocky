@@ -1,0 +1,46 @@
+- name: Make sure pymysql is present
+  become: true
+  pip:
+    name: pymysql
+    state: present
+
+- name: Install MySQL
+  become: true
+  dnf:
+    state: installed
+    pkg: mysql-server
+
+- name: start and enable MySQL
+  service:
+    name: mysqld
+    state: started
+    enabled: yes
+
+- name: MySQL set root pwd
+  mysql_user:
+    user: "root"
+    password: "{{ mysql_root_pwd }}"
+    host: localhost
+
+- name: Secure the MySQL root user for IPV6 localhost (::1)
+  mysql_user:
+    user: "root"
+    password: "{{ mysql_root_pwd }}"
+    host: "::1"
+
+- name: Secure the MySQL root user for IPV4 localhost (127.0.0.1)
+  mysql_user:
+    user: "root"
+    password: "{{ mysql_root_pwd }}"
+    host: "127.0.0.1"
+
+- name: mysql remove anonymous user
+  mysql_user:
+    user: ""
+    state: absent
+
+- name: Remove the MySQL test database
+  mysql_db:
+    db: test
+    state: absent
+

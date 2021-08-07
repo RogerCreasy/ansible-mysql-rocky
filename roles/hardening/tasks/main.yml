@@ -1,0 +1,69 @@
+- name: Update sshd config
+  become: true
+  template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+  notify: restart sshd
+
+- name: Install dnf-automatic (auto update)
+  become: true
+  dnf:
+    state: installed
+    pkg: dnf-automatic
+
+- name: update dnf-automatic (security updates only)
+  become: true
+  template:
+    src: dnf-automatic.conf
+    dest: /etc/dnf/automatic.conf
+
+- name: start and enable dnf-automatic
+  service:
+    name: dnf-automatic.timer
+    state: started
+    enabled: yes
+
+- name: Install security-related packages
+  become: true
+  dnf:
+    pkg: ['fail2ban', 'whois', 'lynis', 'rkhunter']
+    state: present
+
+- name: Copy fail2ban configuration into place
+  become: true
+  template:
+    src: fail2ban.local.conf.j2
+    dest: /etc/fail2ban/jail.local
+  notify: restart fail2ban
+
+- name: Ensure fail2ban is started
+  become: true
+  service:
+    name: fail2ban
+    state: started
+
+- name: Install logwatch
+  become: true
+  dnf:
+    pkg: logwatch
+    state: installed
+
+- name: Configure logwatch
+  become: true
+  template:
+    src: logwatch.conf.j2
+    dest: /etc/logwatch/conf/logwatch.conf
+
+- name: Remove logwatch's dist cronjob
+  become: true
+  file:
+    state: absent
+    path: /etc/cron.daily/00logwatch
+
+- name: Configure weekly logwatch cronjob
+  become: true
+  cron:
+    special_time: weekly
+    job: /usr/sbin/logwatch
+    name: logwatch
+

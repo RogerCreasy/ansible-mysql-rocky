@@ -1,0 +1,76 @@
+- name: Install chrony
+  dnf:
+    name: chrony
+    state: present
+
+- name: cp chrony config to server
+  template:
+    src: ntpd.config
+    dest: /etc/chrony.conf
+
+- name: Set Synchronization
+  command: timedatectl set-ntp true
+
+- name: Start/Enable chrony
+  service:
+    name: chronyd
+    state: started
+    enabled: yes
+
+- name: Install Postfix
+  become: true
+  name: Install Postfix
+  dnf:
+    name: postfix
+    state: present
+
+- name: Set up Postfix to relay mail
+  template:
+    src: postfix.conf
+    dest: /etc/postfix/main.cf
+
+- name: Set Postfix Aliases
+  template: src=aliases dest=/etc/aliases
+
+- name: Start/Enable Postfix
+  service:
+    name: postfix
+    state: started
+    enabled: yes
+
+- name: Install mailx
+  dnf:
+    name: mailx
+    state: present
+
+- name: Create new user accounts
+  become: true
+  user:
+    name: "{{ item.username }}"
+    password: "{{ item.pwd }}"
+    shell: /bin/bash
+  with_items:
+      - "{{ users }}"
+
+- name: Add authorized_keys for users
+  become: true
+  authorized_key:
+    user: "{{ item.username }}"
+    key: "{{ lookup('file', item.pubkey) }}"
+  with_items:
+    - "{{ users }}"
+
+- name: Add users to sudoers
+  become: true
+  lineinfile: dest=/etc/sudoers
+              regexp="{{ item.username }} ALL"
+              line="{{ item.username }} ALL=(ALL) ALL"
+              state=present
+  with_items:
+    - "{{ users }}"
+
+- name: Put SELinux in permissive mode (CHANGE THIS)
+  become: true
+  selinux:
+    policy: targeted
+    state: permissive

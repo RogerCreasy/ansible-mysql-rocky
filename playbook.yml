@@ -1,0 +1,23 @@
+---
+- name: MySQL Servers
+  hosts: mysql_servers
+  gather_facts: yes
+  vars_files:
+    - vars/general.yml
+
+  pre_tasks:
+    - name: Install epel-release
+      dnf:
+        name: epel-release
+        state: present
+
+    - name: Update package cache
+      dnf: update_cache=yes
+
+    - name: Update packages
+      raw: dnf upgrade -y
+
+  roles:
+    - base_setup
+    - hardening
+    - mysql
