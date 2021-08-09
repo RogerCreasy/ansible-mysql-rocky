@@ -41,7 +41,9 @@ Create a directory within the 'keys' directory for each user you want to add to 
 In the ansible.cfg file set the location of the private key (private_key_file) you want to use as root as the script runs. The default is to use the ed25519 key for the user who is running the script.<br>
 
 Create a file named 'hosts'<br>
-In the 'hosts' file, out the ip(s) of the servers you wish to set up.<br>
+In the 'hosts' file, put the server group name and ip(s) of the servers you wish to set up.
+`[mysql_servers]
+111.111.111.111`
 
 From the root of the project directory, run the playbook.
 `ansible-playbook playbook.yml`
