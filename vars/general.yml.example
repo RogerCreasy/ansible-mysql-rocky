@@ -6,7 +6,7 @@ users:
     pwd: [hashed password (see README)]
     email: [linux user's email address]
     pubkey: keys/[username]/[key name].pub
-(repead the above for other sudo users)
+(repeat the above for other sudo users)
 
 keys:
   kex_algorithms: "ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256"
