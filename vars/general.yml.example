@@ -17,3 +17,8 @@ mysql_root_pwd: [mysql root user password]
 
 hostname: [FQDN i.e. sub.example.com]
 domain: [ base domain i.e. example.com]
+
+schemas:
+  - [schema/database 1]
+  - [schema/database 2]
+(repeat for all schemas)

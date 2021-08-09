@@ -1,6 +1,7 @@
 hosts
 vars/*
 keys/*
+roles/mysql/templates/*
 *.retry
 *.sw*
 .fuse*
