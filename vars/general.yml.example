@@ -1,0 +1,19 @@
+admin_email: [youraddress@yourdomain.com]
+
+users:
+  - name: [name]
+    username: [linux username]
+    pwd: [hashed password (see README)]
+    email: [linux user's email address]
+    pubkey: keys/[username]/[key name].pub
+(repead the above for other sudo users)
+
+keys:
+  kex_algorithms: "ecdh-sha2-nistp256,ecdh-sha2-nistp384,ecdh-sha2-nistp521,diffie-hellman-group14-sha1,diffie-hellman-group-exchange-sha256"
+  ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
+  macs: "hmac-sha2-256,hmac-sha2-512,hmac-sha1"
+
+mysql_root_pwd: [mysql root user password]
+
+hostname: [FQDN i.e. sub.example.com]
+domain: [ base domain i.e. example.com]

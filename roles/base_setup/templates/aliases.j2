@@ -88,11 +88,14 @@ marketing:	postmaster
 sales:		postmaster
 support:	postmaster
 
+# fix internal
+root@somehost.localdomain    root@{{ hostname }}
+@somehost.localdomain        root@{{ hostname }}
 
 # trap decode to catch security attacks
 decode:		root
 
 # Person who should get root's mail
-root:          roger@rogercreasy.com
+root:       {{ admin_email }}
 
 

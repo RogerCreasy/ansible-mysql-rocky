@@ -42,7 +42,8 @@ mail_owner = postfix
 # from gethostname(). $myhostname is used as a default value for many
 # other configuration parameters.
 #
-myhostname = db1.imageweaversmarketing.com
+myhostname = {{ hostname }}
+mydomain= {{ domain }}
 
 # RECEIVING MAIL
 
@@ -128,7 +129,7 @@ unknown_local_recipient_reject_code = 550
 # "postfix reload" to eliminate the delay.
 #
 #alias_maps = dbm:/etc/aliases
-alias_maps = hash:/etc/aliases
+alias_maps = hash:/etc/postfix/aliases
 #alias_maps = hash:/etc/aliases, nis:mail.aliases
 #alias_maps = netinfo:/aliases
 
@@ -139,7 +140,7 @@ alias_maps = hash:/etc/aliases
 #
 #alias_database = dbm:/etc/aliases
 #alias_database = dbm:/etc/mail/aliases
-alias_database = hash:/etc/aliases
+alias_database = hash:/etc/postfix/aliases
 #alias_database = hash:/etc/aliases, hash:/opt/majordomo/aliases
 
 # DEBUGGING CONTROL
@@ -190,4 +191,4 @@ setgid_group = postdrop
 #
 html_directory = no
 
-
+smtp_generic_maps = hash:/etc/postfix/generic

@@ -19,18 +19,24 @@
 
 - name: Install Postfix
   become: true
-  name: Install Postfix
   dnf:
     name: postfix
     state: present
 
 - name: Set up Postfix to relay mail
   template:
-    src: postfix.conf
+    src: postfix.conf.j2
     dest: /etc/postfix/main.cf
 
+- name: Set Postfix Generic
+  template:
+    src: postfix-generic.j2
+    dest: /etc/postfix/generic
+
 - name: Set Postfix Aliases
-  template: src=aliases dest=/etc/aliases
+  template:
+    src: aliases.j2
+    dest: /etc/postfix/aliases
 
 - name: Start/Enable Postfix
   service:
