@@ -59,4 +59,26 @@
     name: "{{ item }}"
     state: present
   with_items:
-      - "{{ schemas }}"
+    - "{{ schemas }}"
+
+- name: Copy database dump files
+  copy:
+    src: "{{ item }}"
+    dest: /tmp/{{ item }}.gz
+  with_items:
+    - "{{ schemas }}"
+
+- name: gunzip dump files
+  command: gunzip /tmp/{{ item }}.gz
+  with_items:
+    - "{{ schemas }}"
+
+- name: Restore database
+  mysql_db:
+    login_user: "root"
+    login_password: "{{ mysql_root_pwd }}"
+    name: "{{ item }}"
+    state: import
+    target: /tmp/{{ item }}
+  with_items:
+    - "{{ schemas }}"
