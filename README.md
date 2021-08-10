@@ -20,10 +20,11 @@ This project is an ansible script that configures the server and installs MySQL.
   * create sudo user accounts
   * basic system hardening
   * install, conifgure, and secure mysql
+  * add schema(s) (databases in MySQL speak)
+  * upload and import dump files
 
 ## To Be Done
-  * add schemas (databases)
-  * set up database(s) from a mysqldump
+  * check for absense of schemas - then skip add schema and import
 
 ## Basic instructions
 Generate a hash of each sudo user password.
@@ -38,13 +39,16 @@ Create a 'keys' directory at the project root. THis directory should be at the s
 Create a directory within the 'keys' directory for each user you want to add to the server. These sub-directories should be named with teh linux username of the users. Copy each user's public key into the appropriate keys sub-directory. i.e. the public key for linuxuser1 should be copied into keys/linuxuser1/<br>
 *the public key filename should end with .pub*<br>
 
+Gzip your dump files, name the files the same as the schema(s) without the .gz extension, place the files in `roles/mysql/files/`<br>
+
 In the ansible.cfg file set the location of the private key (private_key_file) you want to use as root as the script runs. The default is to use the ed25519 key for the user who is running the script.<br>
 
 Create a file named 'hosts'<br>
-In the 'hosts' file, put the server group name and ip(s) of the servers you wish to set up.
-`[mysql_servers]
-111.111.111.111`
-
+In the 'hosts' file, put the server group name and ip(s) of the server(s) you wish to set up.
+```
+     [mysql_servers]
+     111.111.111.111
+```
 From the root of the project directory, run the playbook.
 `ansible-playbook playbook.yml`
 <br>
