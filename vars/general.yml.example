@@ -22,3 +22,11 @@ schemas:
   - [schema/database 1]
   - [schema/database 2]
 (repeat for all schemas)
+
+backup: [true/false] (do you want to install the s3 backup system)
+
+backup_endpoint: "[endpoint URL]" e.g. "sfo3.digitaloceanspaces.com"
+
+backup_key_id: ["your_key_id"]
+
+backup_key: ["your_key"]
