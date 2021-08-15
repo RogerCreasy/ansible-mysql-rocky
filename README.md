@@ -60,6 +60,11 @@ The script can set up a database backup system. The installation of this system 
 The script checks the value of this variable, and runs the backups playbook if the variable is set to true.<br>
 There is a little prework involved in setting up the backup system.
   * On AWS S3 or Digital Ocean Spaces create a bucket to store your backups
+  * generate a key
+  * copy the key id as the value of `backup_key_id` in vars/general.yml
+  * copy the key as the value of `backup_key` in vars/general.yml
+  * name your bucket on Digital Ocean or AWS, and save the name to `backup_bucket` in vars/general.yml
+  * get the url of your endpoint, save it to `backup_endpoint` in vars/general.yml
 
 ## Contributing
 Any ideas for improvement are welcome. Feel free to make pull requests (please add your basic idea as an issue first). If you prefer direct contact over making a PR, email me at roger@rogercreasy.com.
