@@ -1,0 +1,66 @@
+- name: install AWS CLI (works for S3 or DO spaces)
+  pip:
+    name: awscli
+    state: present
+
+- name: Create AWS credential dir
+  file:
+    path: /root/.aws
+    state: directory
+    mode: 0700
+
+- name: copy AWS credentials file
+  template:
+    src: credentials.j2
+    dest: /root/.aws/credentials
+    owner: root
+    group: root
+    mode: '0500'
+
+- name: Add MySQL backup user accounts
+  mysql_user:
+    login_user: "root"
+    login_password: "{{ mysql_root_pwd }}"
+    user: "{{ item.name }}"
+    password: "{{ item.pwd }}"
+    priv: "{{ item.name }}.*:SHOW VIEW,LOCK TABLES,SELECT/*.*:PROCESS,EVENT,LOCK TABLES,SHOW DATABASES"
+  with_items:
+    - "{{ backup_users }}"
+
+- name: Set MySQL login-path(s)
+  expect:
+    command: mysql_config_editor set --login-path=backup-{{ item.schema }} --host=localhost --user={{ item.name }} --password
+    responses:
+      (?i)Enter password: "{{ item.pwd }}"
+  with_items:
+    - "{{ backup_users }}"
+
+- name: Create backup script dir
+  file:
+    path: /srv/backups/scripts
+    state: directory
+    mode: 0700
+
+- name: copy backup bash script
+  template:
+    src: backup_script.sh.j2
+    dest: /srv/backups/scripts/mysql-backup
+    owner: root
+    group: root
+    mode: '0500'
+
+- name: Create backup file dir
+  file:
+    path: /backups/
+    state: directory
+    mode: 0700
+
+- name: Set Up chrontab for backup
+  cron:
+    name: "{{ item }} backup"
+    minute: "{{ backup_cron_minute }}"
+    hour: "{{ backup_cron_hour }}"
+    day: "{{ backup_cron_day }}"
+    job: "/srv/backups/scripts/mysql-backup {{ item }} 2>&1"
+  with_items:
+    - "{{ schemas }}"

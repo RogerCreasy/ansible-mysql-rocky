@@ -22,6 +22,7 @@ This project is an ansible script that configures the server and installs MySQL.
   * install, conifgure, and secure mysql
   * add schema(s) (databases in MySQL speak)
   * upload and import dump files
+  * optionally set up a backup system
 
 ## To Be Done
   * check for absense of schemas - then skip add schema and import
@@ -53,6 +54,12 @@ From the root of the project directory, run the playbook.
 `ansible-playbook playbook.yml`
 <br>
 The script should complete within 10 minutes, depending on your connection speed and the speed of the server and its connection.<br>
+
+## Backup System (optional)
+The script can set up a database backup system. The installation of this system is triggered by setting the "backups" variable in vars/general.yaml to "true.
+The script checks the value of this variable, and runs the backups playbook if the variable is set to true.<br>
+There is a little prework involved in setting up the backup system.
+  * On AWS S3 or Digital Ocean Spaces create a bucket to store your backups
 
 ## Contributing
 Any ideas for improvement are welcome. Feel free to make pull requests (please add your basic idea as an issue first). If you prefer direct contact over making a PR, email me at roger@rogercreasy.com.

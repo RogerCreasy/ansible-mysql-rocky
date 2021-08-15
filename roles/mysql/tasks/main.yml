@@ -52,6 +52,16 @@
     db: test
     state: absent
 
+- name: Add MySQL application users
+  mysql_user:
+    login_user: "root"
+    login_password: "{{ mysql_root_pwd }}"
+    user: "{{ item.name }}"
+    password: "{{ item.pwd }}"
+    priv: "{{ item.name }}.*:DELETE,INSERT,SELECT,UPDATE"
+  with_items:
+    - "{{ app_users }}"
+
 - name: add schemas
   mysql_db:
     login_user: "root"
@@ -82,3 +92,8 @@
     target: /tmp/{{ item }}
   with_items:
     - "{{ schemas }}"
+
+- name: Include Backup config, if set
+  include_role:
+    name: mysql_backup
+  when: "{{ backup }} == true"

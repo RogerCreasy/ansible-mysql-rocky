@@ -1,0 +1,55 @@
+#!/bin/sh
+
+#----------------------------------------------------------
+# mysql database backup script / dump
+# created August 31, 2020.
+# copyright 2020 Roger Creasy RogerCreasy.com
+#
+# accepts one input -- the schema/database name
+# uses credentials from mysql configuration. These must be
+#     set using mysql_config_editor
+#----------------------------------------------------------
+
+# set up the variables - possibly move these to envs
+DBSERVER=127.0.0.1
+DATABASE=$1
+FILE=/backups/${DATABASE}-backup.sql.`date +"%Y%m%d"`
+LOG='/var/log/mysql-backups.log'
+
+# use this command for a database server on localhost. add other options if need be.
+# login-path is set using mysql_config_editor
+mysqldump --login-path=backup-${DATABASE} ${DATABASE} > ${FILE}
+
+if [ -f "$FILE" ]; then
+    # compress the mysql database dump file
+    gzip $FILE
+
+    # log the result
+    printf "$(date) :: CREATED ${FILE}.gz \n" >> $LOG
+
+    # push file to cloud storage (aws cli works for S3 or Digital Ocean Spaces
+    /usr/local/bin/aws s3 --endpoint={{ backup_endpoint }} cp ${FILE}.gz s3://{{ backup_bucket }}/
+    printf "$(date) :: STORED TO "{{ backup_bucket }}" ${FILE}.gz \n" >> $LOG
+
+    # delete the file from 8 days ago
+    DELFILE=/backups/${DATABASE}-backup.sql.`date --date='8 days ago' +"%Y%m%d"`.gz
+    if [ -f "$DELFILE" ]; then
+        rm -f $DELFILE
+        printf "$(date) :: DELETED $DELFILE \n" >> $LOG
+    fi
+
+    # if today is Saturday, handle weekly
+    if [ $(date +%u) -eq 6 ]; then
+        cp $FILE.gz /backups/${DATABASE}-weeklyBackup.sql.`date +"%Y%m%d"`.gz
+        printf "$(date) :: CREATED weekly backup ${DATABASE}-weeklyBackup.sql.`date +"%Y%m%d"`.gz \n" >> $LOG
+
+        # delete the weekly from 5 weeks ago
+        DELWEEKLYFILE=/backups/${DATABASE}-backup.sql.`date --date='35 days ago' +"%Y%m%d"`.gz
+        if [ -f "$DELWEEKLYFILE" ]; then
+            rm -f $DELWEEKLYFILE
+            printf "$(date) :: DELETED $DELWEEKLYFILE \n" >> $LOG
+        fi
+    fi
+else
+    printf "$(date) :: ERROR ${FILE}.gz creation failed\n" >> $LOG
+fi

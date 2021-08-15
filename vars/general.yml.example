@@ -1,5 +1,7 @@
 admin_email: [youraddress@yourdomain.com]
 
+root_pwd: [hashed pwd (see README)]
+
 users:
   - name: [name]
     username: [linux username]
@@ -23,10 +25,33 @@ schemas:
   - [schema/database 2]
 (repeat for all schemas)
 
+app_users: (users with privileges for web apps)
+  - name: "[schema1 app username]"
+    pwd: "[schema1 app user password]"
+
+  - name: "[schema2 app username]"
+    pwd: "[schema2 app user password]"
+(repeat for all schemas)
+
 backup: [true/false] (do you want to install the s3 backup system)
 
-backup_endpoint: "[endpoint URL]" e.g. "sfo3.digitaloceanspaces.com"
+backup_endpoint: "[endpoint URL]" e.g. "https://sfo3.digitaloceanspaces.com"
 
-backup_key_id: ["your_key_id"]
+backup_key_id: "[your_key_id]"
 
-backup_key: ["your_key"]
+backup_key: "[your_key]"
+
+backup_bucket: "[your bucket name]"
+
+backup_cron_minute: "20"
+backup_cron_hour: "04"
+backup_cron_day: "*"
+(set the above to any viable cron settings)
+
+backup_users:
+  - name: "[schema1]"
+    pwd: "[schema1 backup user password]"
+
+  - name: "[schema2]"
+    pwd: "[schema2 backup user password]"
+(repeat for all backup users)
