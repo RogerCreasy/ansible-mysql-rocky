@@ -1,3 +1,9 @@
+- name: Set Root pwd
+  become: true
+  user:
+    name: root
+    password: "{{ root_pwd }}"
+
 - name: Install chrony
   dnf:
     name: chrony
@@ -47,6 +53,11 @@
 - name: Install mailx
   dnf:
     name: mailx
+    state: present
+
+- name: Install htop
+  dnf:
+    name: htop
     state: present
 
 - name: Create new user accounts
