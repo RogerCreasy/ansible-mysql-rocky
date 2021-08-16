@@ -1,0 +1,30 @@
+- name: Start/Enable firewalld
+  service:
+    name: firewalld
+    state: started
+    enabled: true
+
+- name: Create custom zone for mysqld
+  firewalld:
+    zone: mysqlrules
+    state: present
+    permanent: true
+
+- name: Add MySQL to the mysql zone
+  firewalld:
+    zone: mysqlrules
+    port: 3306/tcp
+    state: enabled
+    permanent: true
+
+- name: Add web server IP to mysql zone
+  firewalld:
+    zone: mysqlrules
+    source: "{{ web_server_ip }}"
+    state: enabled
+    permanent: true
+
+- name: Restart firewalld (to enable zone from previous step)
+  service:
+    name: firewalld
+    state: restarted
