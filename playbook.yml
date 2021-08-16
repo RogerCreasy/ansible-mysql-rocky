@@ -21,3 +21,4 @@
     - base_setup
     - hardening
     - mysql
+    - firewalld

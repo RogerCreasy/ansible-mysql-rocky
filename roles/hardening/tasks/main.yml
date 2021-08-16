@@ -66,4 +66,3 @@
     special_time: weekly
     job: /usr/sbin/logwatch
     name: logwatch
-

@@ -15,10 +15,12 @@ keys:
   ciphers: "aes128-ctr,aes192-ctr,aes256-ctr"
   macs: "hmac-sha2-256,hmac-sha2-512,hmac-sha1"
 
-mysql_root_pwd: [mysql root user password]
+web_server_ip: [ip of server allowed to access mysql (firewalld rule)]
 
 hostname: [FQDN i.e. sub.example.com]
 domain: [ base domain i.e. example.com]
+
+mysql_root_pwd: [mysql root user password]
 
 schemas:
   - [schema/database 1]
