@@ -58,6 +58,7 @@
     login_password: "{{ mysql_root_pwd }}"
     user: "{{ item.name }}"
     password: "{{ item.pwd }}"
+    host: "{{ web_server_host }}
     priv: "{{ item.name }}.*:DELETE,INSERT,SELECT,UPDATE"
   with_items:
     - "{{ app_users }}"
